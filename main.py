@@ -1,5 +1,5 @@
 import csv
-from tabulate import tabulate
+# from tabulate import tabulate
 import defs
 
 MenuOp = ''
@@ -15,23 +15,26 @@ while MenuOp != '5':
             especial = input('Será jogado com o especial?\n1-Sim 2-Não')
             print("\033c", end="")
 
-            objetivo1 = defs.objetivo()
-            objetivo2 = defs.objetivo()
+            ObPlayer1 = defs.SerieVencedora(jogadas)
+            ObPlayer2 = defs.SerieVencedora(jogadas)
 
             input("Aperte enter para ver o objetivo do jogador 1")
-            input(f'Seu objetivo é {objetivo1}(aperte enter e passe para o proximo jogador)')
+            input(f'Seu objetivo é {ObPlayer1}(aperte enter e passe para o proximo jogador)')
             print("\033c", end="")
             input("Aperte enter para ver o objetivo do jogador 2")
-            input(f'Seu objetivo é {objetivo2}, aperte enter para começar o jogo')
+            input(f'Seu objetivo é {ObPlayer2}, aperte enter para começar o jogo')
             print("\033c", end="")
 
             # Estabelecer condições de vitória
             # fazer o loop do jogo, e as jogadas
             condi = ''
+            Player = False
             while condi != "2":
-                print(tabulate(tabuleiro, headers='firstrow', tablefmt='fancy_grid'))
-                # print(tabuleiro)
+                Player = not Player
+                # print(tabulate(tabuleiro, headers='firstrow', tablefmt='fancy_grid'))
+                print(tabuleiro)
                 game = input("1-jogar\n2-Sair e salvar\n3-Sair sem salvar")
+                row, col = '', ''
                 match game:
                     case '1':
                         if especial == '1':
@@ -41,10 +44,10 @@ while MenuOp != '5':
                         row, col = defs.escolherPosicao(tabuleiro, indice)
                         tabuleiro[row][col] = num
                         jogadas.remove(num)
-                        if defs.vitoria(objetivo1, objetivo2):
+                        if defs.vitoria(ObPlayer1, ObPlayer2, Player, tabuleiro):
                             InvalidName = True
                             while InvalidName:
-                                nomeranking = input(f'Parabens!!, agora adicione seu nome a tabela de\n para eternizar o momento: ')
+                                nomeranking = input(f'Parabens!!, agora adicione seu nome a tabela de vencedores para eternizar o momento: ')
                                 if nomeranking == '':
                                     print("Digite um nome!")
                                 else:
