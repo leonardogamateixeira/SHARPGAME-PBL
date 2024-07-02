@@ -25,11 +25,8 @@ while MenuOp != '5':
                     print('Digite um valor valido!')
             print("\033c", end="")
 
-            # ObPlayerStr1 = defs.objetivo()
-            # ObPlayerStr2 = defs.objetivo()
-
-            ObPlayerStr1 = 'Par'
-            ObPlayerStr2 = 'Crescente'
+            ObPlayerStr1 = defs.objetivo()
+            ObPlayerStr2 = defs.objetivo()
 
             ObPlayer1 = defs.SerieObjetivo(ObPlayerStr1, indice)
             ObPlayer2 = defs.SerieObjetivo(ObPlayerStr2, indice)
