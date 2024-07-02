@@ -26,6 +26,7 @@ while MenuOp != '5':
 
             ObPlayerStr1 = defs.objetivo()
             ObPlayerStr2 = defs.objetivo()
+
             ObPlayer1 = defs.SerieObjetivo(ObPlayerStr1, indice)
             ObPlayer2 = defs.SerieObjetivo(ObPlayerStr2, indice)
             VitoriaPlayer1 = defs.SerieVencedora(ObPlayer1, indice)
@@ -46,7 +47,6 @@ while MenuOp != '5':
                 Player = not Player
                 print("\033c", end="")
                 print(tabulate(tabuleiro, headers='firstrow', tablefmt='fancy_grid'))
-                # print(tabuleiro)
                 game = input("1-jogar\n2-Sair e salvar\n3-Sair sem salvar")
                 row, col = '', ''
                 match game:
