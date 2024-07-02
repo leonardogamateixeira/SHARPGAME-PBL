@@ -1,5 +1,5 @@
 import csv
-# from tabulate import tabulate
+from tabulate import tabulate
 import defs
 
 MenuOp = ''
@@ -12,17 +12,30 @@ while MenuOp != '5':
         case '1':
             print('1-Fácil(3x3)\n2-Média(4x4)\n3-Difícil(5x5)\n')
             tabuleiro, jogadas, indice = defs.dificuldade()
-            especial = input('Será jogado com o especial?\n1-Sim 2-Não')
+            InvalidOp = True
+            while InvalidOp:
+                especial = input('Será jogado com o especial?\n1-Sim 2-Não\nSelecione: ')
+                print("\033c", end="")
+                if especial == '1':
+                    InvalidOp = False
+                if especial == '2':
+                    InvalidOp = False
+                else:
+                    print('Digite um valor valido!')
             print("\033c", end="")
 
-            ObPlayer1 = defs.SerieVencedora(jogadas)
-            ObPlayer2 = defs.SerieVencedora(jogadas)
+            ObPlayerStr1 = defs.objetivo()
+            ObPlayerStr2 = defs.objetivo()
+            ObPlayer1 = defs.SerieObjetivo(ObPlayerStr1, indice)
+            ObPlayer2 = defs.SerieObjetivo(ObPlayerStr2, indice)
+            VitoriaPlayer1 = defs.SerieVencedora(ObPlayer1, indice)
+            VitoriaPlayer2 = defs.SerieVencedora(ObPlayer2, indice)
 
             input("Aperte enter para ver o objetivo do jogador 1")
-            input(f'Seu objetivo é {ObPlayer1}(aperte enter e passe para o proximo jogador)')
+            input(f'Seu objetivo é {ObPlayerStr1}(aperte enter e passe para o proximo jogador)')
             print("\033c", end="")
             input("Aperte enter para ver o objetivo do jogador 2")
-            input(f'Seu objetivo é {ObPlayer2}, aperte enter para começar o jogo')
+            input(f'Seu objetivo é {ObPlayerStr2}, aperte enter para começar o jogo')
             print("\033c", end="")
 
             # Estabelecer condições de vitória
@@ -31,8 +44,9 @@ while MenuOp != '5':
             Player = False
             while condi != "2":
                 Player = not Player
-                # print(tabulate(tabuleiro, headers='firstrow', tablefmt='fancy_grid'))
-                print(tabuleiro)
+                print("\033c", end="")
+                print(tabulate(tabuleiro, headers='firstrow', tablefmt='fancy_grid'))
+                # print(tabuleiro)
                 game = input("1-jogar\n2-Sair e salvar\n3-Sair sem salvar")
                 row, col = '', ''
                 match game:
@@ -44,10 +58,11 @@ while MenuOp != '5':
                         row, col = defs.escolherPosicao(tabuleiro, indice)
                         tabuleiro[row][col] = num
                         jogadas.remove(num)
-                        if defs.vitoria(ObPlayer1, ObPlayer2, Player, tabuleiro):
+                        Ganhador = defs.CheckVitoria(VitoriaPlayer1, VitoriaPlayer2, Player,tabuleiro, row, col)
+                        if Ganhador:
                             InvalidName = True
                             while InvalidName:
-                                nomeranking = input(f'Parabens!!, agora adicione seu nome a tabela de vencedores para eternizar o momento: ')
+                                nomeranking = input(f'Parabens {Ganhador}!!, agora adicione seu nome a tabela de vencedores para eternizar o momento: ')
                                 if nomeranking == '':
                                     print("Digite um nome!")
                                 else:
@@ -57,10 +72,10 @@ while MenuOp != '5':
                             condi = '2'
                     case '2':
                         condi = '2'
-                        with open('save.txt', 'w') as gamefile:
-                            gamefile.write(tabuleiro)
+                        input('salvar e sair')
                     case '3':
                         condi = '2'          
+                        input('sair e fds')
         
         case '2':
             print('Como jogar o jogo: Há um tabuleiro que pode ter N por N casas e deve ser jogado por dois jogadores. Cada jogador, em sua vez e de forma alternada, pode selecionar um número dentre os números disponíveis e posicionar este número em uma das casas. Ganha o jogador que fizer a sequência de N números em linha (diagonal, vertical ou horizontal, com leitura da esquerda para a direita e de cima para baixo) que atende ao seu objetivo. O jogo termina em empate se todas as casas do tabuleiro forem marcadas sem que nenhum jogador tenha completado uma sequência de objetivos.')
