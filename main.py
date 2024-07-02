@@ -4,6 +4,7 @@ import defs
 
 MenuOp = ''
 while MenuOp != '5':
+    print("\033c", end="")
     print('Tabuleiro de Números\n1-Jogar\n2-Tutorial\n3-Ultimos vencedores\n4-Desabilitar Som\n5-Sair do Jogo\n')
     MenuOp = input("Selecione uma opção: ")
     print("\033c", end="")
@@ -24,12 +25,16 @@ while MenuOp != '5':
                     print('Digite um valor valido!')
             print("\033c", end="")
 
-            ObPlayerStr1 = defs.objetivo()
-            ObPlayerStr2 = defs.objetivo()
+            # ObPlayerStr1 = defs.objetivo()
+            # ObPlayerStr2 = defs.objetivo()
+
+            ObPlayerStr1 = 'Par'
+            ObPlayerStr2 = 'Crescente'
+
             ObPlayer1 = defs.SerieObjetivo(ObPlayerStr1, indice)
             ObPlayer2 = defs.SerieObjetivo(ObPlayerStr2, indice)
-            VitoriaPlayer1 = defs.SerieVencedora(ObPlayer1, indice)
-            VitoriaPlayer2 = defs.SerieVencedora(ObPlayer2, indice)
+            VitoriaPlayer1 = defs.SerieVencedora(ObPlayerStr1, ObPlayer1, indice)
+            VitoriaPlayer2 = defs.SerieVencedora(ObPlayerStr2, ObPlayer2, indice)
 
             input("Aperte enter para ver o objetivo do jogador 1")
             input(f'Seu objetivo é {ObPlayerStr1}(aperte enter e passe para o proximo jogador)')
@@ -45,8 +50,11 @@ while MenuOp != '5':
             while condi != "2":
                 Player = not Player
                 print("\033c", end="")
+                if Player:
+                    print("Vez do Player1")
+                else:
+                    print("Vez do Player2")
                 print(tabulate(tabuleiro, headers='firstrow', tablefmt='fancy_grid'))
-                # print(tabuleiro)
                 game = input("1-jogar\n2-Sair e salvar\n3-Sair sem salvar")
                 row, col = '', ''
                 match game:
@@ -62,6 +70,7 @@ while MenuOp != '5':
                         if Ganhador:
                             InvalidName = True
                             while InvalidName:
+                                print(tabulate(tabuleiro, headers='firstrow', tablefmt='fancy_grid'))
                                 nomeranking = input(f'Parabens {Ganhador}!!, agora adicione seu nome a tabela de vencedores para eternizar o momento: ')
                                 if nomeranking == '':
                                     print("Digite um nome!")

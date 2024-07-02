@@ -76,12 +76,13 @@ def escolherPosicao(tabuleiro, index):
         else:
             print(f"Posição inválida. Escolha entre 1 e {index}.")
   
-def SerieVencedora(ObPlayer, indice):
+def SerieVencedora(PlayerStr, ObPlayer, indice):
     sequencias = []
     for jogada in range(len(ObPlayer)):
         if jogada > len(ObPlayer) - indice:
-            sequenciasreversa = sequencias[::-1]
-            sequencias.extend(sequenciasreversa)
+            if PlayerStr == 'Par' or PlayerStr == 'Impar':
+                sequenciasreversa = [sequencias[0][::-1],sequencias[1][::-1]]
+                sequencias.extend(sequenciasreversa)
             return sequencias
         combinacao = []
         for j in range(indice):
@@ -135,3 +136,4 @@ def CheckVitoria(objetivo1, objetivo2, Player, tabuleiro, row, col):
         return Player
     else:
         ganhador = ganhouCol
+    return ganhador
