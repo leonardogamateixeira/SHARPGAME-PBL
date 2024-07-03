@@ -67,14 +67,13 @@ while MenuOp != '5':
                         if Ganhador:
                             InvalidName = True
                             while InvalidName:
+                                print("\033c", end="")
                                 print(tabulate(tabuleiro, headers='firstrow', tablefmt='fancy_grid'))
-                                nomeranking = input(f'Parabens {Ganhador}!!, agora adicione seu nome a tabela de vencedores para eternizar o momento: ')
+                                nomeranking = input(f'Parabens!!, agora adicione seu nome a tabela de vencedores para eternizar o momento: ')
                                 if nomeranking == '':
                                     print("Digite um nome!")
                                 else:
                                     InvalidName = False
-                            with open('ranking.csv', 'a') as rankingfile:
-                                csv.writer(rankingfile, delimiter=',').writerow([nomeranking])
                             condi = '2'
                     case '2':
                         condi = '2'
@@ -91,8 +90,6 @@ while MenuOp != '5':
         case '3':
             # Organizar o arquivo csv e printar a tabela
             print("Tabela com vencedores")
-            with open('ranking.csv', 'r') as rankingfile:
-                rankingfile.read()
 
         case '4':
             print('Desabilitar')
