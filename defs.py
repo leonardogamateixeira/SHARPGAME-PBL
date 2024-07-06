@@ -57,20 +57,39 @@ def SerieObjetivo(objetivo, indice):
 def identificarJogador(tabuleiroCor):
     pass
 
-def SpecialCol():
-    pass
+def SpecialRow(tabuleiro, index):
+    invalidRow = True
+    especial = False
+    while invalidRow:
+        DelRow = int(input(f"Escolha a linha (1-{index}): ")) - 1
+        if 0 <= DelRow < index:
+            tabuleiro[DelRow] = ['' for i in tabuleiro[index - 1]]
+            invalidRow = False
+        else:
+            print(f"Posição inválida. Escolha entre 1 e {index}.")
+    return tabuleiro, especial
 
-def SpecialRow():
-    pass
+def SpecialCol(tabuleiro,index):
+    invalidPos = True
+    especial = False
+    while invalidPos:
+        DelCol = int(input(f"Escolha uma coluna (1-{index}): ")) - 1
+        if 0 <= 1 < index:
+            for i in range(len(tabuleiro)):
+                tabuleiro[i][DelCol] = ''
+            invalidPos = False
+        else:
+            print(f"Posição inválida. Escolha entre 1 e {index}.")
+    return tabuleiro, especial
 
-def escolherNumero(jogadas):
+def escolherNumero(jogadas, tabuleiro):
     InvalidNum = True
     while InvalidNum:
         num = int(input("Escolha um número para colocar no tabuleiro: "))
-        if num in jogadas:
+        if num in jogadas and num not in tabuleiro:
             InvalidNum = False
         else:
-            print("Número não disponível.")
+            print("escolha um numéro disponivel.")
     return num
 
 def escolherPosicao(tabuleiro, index):
