@@ -18,7 +18,6 @@ def dificuldade():
             PlayerNum = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25]
         else:
             print('Digite um valor valido!')
-        # tabuleiro = [['']*index]*index
         tabuleiro = [['' for j in range(index)] for i in range(index)]
     return tabuleiro, PlayerNum, index
 
@@ -37,7 +36,6 @@ def recorte(lista, indice):
             return [i for i in lista if i <= 25]
 
 def SerieObjetivo(objetivo, indice):
-
     if objetivo == 'Par':
         lista = [2,4,6,8,10,12,14,16,18,20,22,24]
         listaobjetivo = recorte(lista, indice)
@@ -56,46 +54,61 @@ def SerieObjetivo(objetivo, indice):
         
     return listaobjetivo
 
+def identificarJogador(tabuleiroCor):
+    pass
+
+def SpecialCol():
+    pass
+
+def SpecialRow():
+    pass
+
 def escolherNumero(jogadas):
-    while True:
+    InvalidNum = True
+    while InvalidNum:
         num = int(input("Escolha um número para colocar no tabuleiro: "))
         if num in jogadas:
-            return num
+            InvalidNum = False
         else:
             print("Número não disponível.")
+    return num
 
 def escolherPosicao(tabuleiro, index):
-    while True:
+    invalidPos = True
+    while invalidPos:
         row = int(input(f"Escolha a linha (1-{index}): ")) - 1
         col = int(input(f"Escolha a coluna (1-{index}): ")) - 1
         if 0 <= row < index and 0 <= col < index:
             if tabuleiro[row][col] == '':
-                return row, col
+                invalidPos = False
             else:
                 print("Posição já ocupada. Escolha novamente.")
         else:
             print(f"Posição inválida. Escolha entre 1 e {index}.")
+    return row, col
   
 def SerieVencedora(PlayerStr, ObPlayer, indice):
     sequencias = []
     for jogada in range(len(ObPlayer)):
         if jogada > len(ObPlayer) - indice:
-            if PlayerStr == 'Par' or PlayerStr == 'Impar':
-                sequenciasreversa = [sequencias[0][::-1],sequencias[1][::-1]]
-                sequencias.extend(sequenciasreversa)
-            return sequencias
+                return sequencias
         combinacao = []
+        combinacao2 = []
         for j in range(indice):
             combinacao.append(ObPlayer[jogada+j])
+            combinacao2.append(ObPlayer[jogada+j])
+        combinacao2.reverse()
         sequencias.append(combinacao)
+        if PlayerStr == 'Par' or PlayerStr == 'Impar':
+            sequencias.append(combinacao2)
 
 def CheckRow(objetivo1, objetivo2,tabuleiro, row):
     if tabuleiro[row] in objetivo1 and tabuleiro[row] in objetivo2:
         return 'draw'
     if tabuleiro[row] in objetivo1:
-        return 'p1'
+        return 'player1'
     if tabuleiro[row] in objetivo2:
-        return 'p2'
+        return 'player2'
     
 
 def CheckCol(objetivo1, objetivo2,tabuleiro, col):
@@ -103,9 +116,9 @@ def CheckCol(objetivo1, objetivo2,tabuleiro, col):
     if coluna in objetivo1 and coluna in objetivo2:
         return 'draw'
     if coluna in objetivo1:
-        return 'p1'
+        return 'player1'
     if coluna in objetivo2:
-        return 'p2'
+        return 'player2'
 
 def CheckDiagonal(objetivo1, objetivo2,tabuleiro, row):
     diagonalcres = [tabuleiro[indice][indice] for indice in range(len(tabuleiro))]
@@ -113,27 +126,27 @@ def CheckDiagonal(objetivo1, objetivo2,tabuleiro, row):
     if (diagonalcres in objetivo1 or diagonaldec in objetivo1) and (diagonalcres in objetivo2 or diagonaldec in objetivo2):
         return 'draw'
     if (diagonalcres in objetivo1 or diagonaldec in objetivo1):
-        return 'p1'
+        return 'player1'
     if (diagonalcres in objetivo2 or diagonaldec in objetivo2):
-        return 'p2'
+        return 'player2'
 
 def CheckVitoria(objetivo1, objetivo2, Player, tabuleiro, row, col):
-    if row == col or -row == col:
-        ganhouDig = CheckDiagonal(objetivo1, objetivo2, tabuleiro, row)
-        if ganhouDig == 'draw':
-            return Player
-        else:
-            ganhador = ganhouDig
+    ganhador = None
+    ganhouDig = CheckDiagonal(objetivo1, objetivo2, tabuleiro, row)
+    if ganhouDig == 'player1' or ganhouDig == 'player2':
+        ganhador = ganhouDig
 
     ganhouRow = CheckRow(objetivo1, objetivo2, tabuleiro, row)
-    if ganhouRow == 'draw':
-        return Player
-    else:
+    if ganhouRow == 'player1' or ganhouRow == 'player2':
         ganhador = ganhouRow
 
     ganhouCol = CheckCol(objetivo1, objetivo2, tabuleiro, col)
-    if ganhouCol == 'draw':
-        return Player
-    else:
+    if ganhouCol == 'player1' or ganhouCol == 'player2':
         ganhador = ganhouCol
-    return ganhador
+
+    if ganhouCol == 'draw' or ganhouRow == 'draw' or ganhouDig == 'draw':
+        if Player: ganhador = 'player1'
+        else: ganhador = 'player2'
+
+    if ganhador != None:
+        return ganhador
