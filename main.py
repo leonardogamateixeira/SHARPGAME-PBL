@@ -1,9 +1,8 @@
-import csv
 from tabulate import tabulate
 import defs
 import json
 import csv
-# oioi
+
 MenuOp = ''
 while MenuOp != '4':
     print("\033c", end="")
@@ -22,7 +21,7 @@ while MenuOp != '4':
                     print("\033c", end="")
                     print('1-Fácil(3x3)\n2-Média(4x4)\n3-Difícil(5x5)\n')
                     # usa da função para estabelecer as regras do jogo, baseado na dificuldade selecionada
-                    tabuleiro, jogadas, indice = defs.dificuldade()
+                    tabuleiro, jogadas, indice, tabuleiroStr = defs.dificuldade()
                     InvalidOp = True
                     while InvalidOp:
                         # pergunta se tera jogada especial
@@ -53,6 +52,8 @@ while MenuOp != '4':
                     input(f'Seu objetivo é {ObPlayerStr2}, aperte enter para começar o jogo')
                     print("\033c", end="")
                     Player = False
+                    especial1 = True
+                    especial2 = True
                     InvalidOpGame = False
 
                 elif JogoOp == '2':
@@ -77,62 +78,87 @@ while MenuOp != '4':
             condi = ''
             # Inicia a a partida
             while condi != "2":
-                # O Player será configurado sendo
-                # Player = True = player1
-                # Player = False = player2
+                # O Player será configurado sendo: 
+                # Player = True é player1
+                # Player = False é player2
                 Player = not Player
+                
                 print("\033c", end="")
                 if Player:
                     print("\033[0;34;1mVez do Player1\033[m")
                 else:
                     print("\033[0;31;1mVez do Player2\033[m")
                 
-                # print(tabulate(tabuleiro, headers='firstrow', tablefmt='fancy_grid'))
-                print(tabuleiro)
+                print(tabulate(tabuleiroStr, headers='firstrow', tablefmt='fancy_grid'))
                 game = input("1-jogar\n2-Sair e salvar\n3-Sair sem salvar")
                 # Reseta as colunas e linhas ao inicio do looping
                 row, col = '', ''
                 match game:
                     case '1':
                         if especial == '1':
-                            
                             # Caso especial tenha sido habilitado, entra na opção de usar o especial
-                            InvalidSpecial = True
-                            while InvalidSpecial:
-                                PlayerSpecial = input("1- Limpar coluna\n2- Limpar linha\n3-Não usar especial")
-                                if PlayerSpecial == '1':
-                                    tabuleiro, Usoespecial = defs.SpecialCol(tabuleiro, indice)
-                                    InvalidSpecial = False
+                                if Player == True and especial1 == True:
+                                    # se o player tiver o especial true, ele usará e perderá,
+                                    # para ser usado apenas uma vez por partida
+                                    InvalidSpecial = True
+                                    while InvalidSpecial:
+                                        PlayerSpecial = input("1- Limpar coluna\n2- Limpar linha\n3-Não usar especial")
+                                        if PlayerSpecial == '1':
+                                            tabuleiro, Usoespecial, tabuleiroStr = defs.SpecialCol(tabuleiro, indice, tabuleiroStr)
+                                            InvalidSpecial = False
 
-                                elif PlayerSpecial == '2':
-                                    tabuleiro, Usoespecial = defs.SpecialRow(tabuleiro, indice)
-                                    InvalidSpecial = False
+                                        elif PlayerSpecial == '2':
+                                            tabuleiro, Usoespecial = defs.SpecialRow(tabuleiro, indice, tabuleiroStr)
+                                            InvalidSpecial = False
 
-                                elif PlayerSpecial == '3':
-                                    InvalidSpecial = False
-                                else:
-                                    print("Digite um valor valido")
-                            if Player:
-                                especial1 = Usoespecial
-                            else:
-                                especial2 = Usoespecial
+                                        elif PlayerSpecial == '3':
+                                            InvalidSpecial = False
+                                        else:
+                                            print("Digite um valor valido")
+                                    if PlayerSpecial != '3':
+                                        especial2 = Usoespecial
 
+                                    especial1 = Usoespecial
+                                elif Player == False and especial2 == True:
+                                    InvalidSpecial = True
+                                    while InvalidSpecial:
+                                        PlayerSpecial = input("1- Limpar coluna\n2- Limpar linha\n3-Não usar especial")
+                                        if PlayerSpecial == '1':
+                                            tabuleiro, Usoespecial, tabuleiroStr = defs.SpecialCol(tabuleiro, indice)
+                                            InvalidSpecial = False
+
+                                        elif PlayerSpecial == '2':
+                                            tabuleiro, Usoespecial, tabuleiroStr = defs.SpecialRow(tabuleiro, indice)
+                                            InvalidSpecial = False
+
+                                        elif PlayerSpecial == '3':
+                                            InvalidSpecial = False
+                                        else:
+                                            print("Digite um valor valido")
+                                    if PlayerSpecial != '3':
+                                        especial2 = Usoespecial
+                                    
+                               
                         # Escolhe qual numero sera usado e onde sera posicionado no tabuleiro
                         print(f"Números disponíveis: {jogadas}")
                         num = defs.escolherNumero(jogadas)
                         row, col = defs.escolherPosicao(tabuleiro, indice)
-
+                        if Player:
+                            tabuleiroStr[row][col] = f"\033[0;34m{num}\033[m"
+                        else:
+                            tabuleiroStr[row][col] = f"\033[0;31m{num}\033[m"
                         tabuleiro[row][col] = num
                         jogadas.remove(num)
 
                         #  Checa se ouve vitoria(isso se repete a cada jogada)
                         Ganhador = defs.CheckVitoria(VitoriaPlayer1, VitoriaPlayer2, Player,tabuleiro, row, col)
                         if Ganhador == 'player1' or Ganhador == 'player2':
+                            # caso a vitoria seja de algum player entra na opção de adicionar 
+                            # a tabela de vencedores o nome do vencedor 
                             InvalidName = True
                             while InvalidName:
                                 print("\033c", end="")
-                                # print(tabulate(tabuleiro, headers='firstrow', tablefmt='fancy_grid'))
-                                print(tabuleiro)
+                                print(tabulate(tabuleiroStr, headers='firstrow', tablefmt='fancy_grid'))
                                 nomeranking = input(f'Parabens {Ganhador}!!, agora adicione seu nome a tabela de vencedores: ')
                                 if nomeranking == '':
                                     print("Digite um nome!")
@@ -141,19 +167,20 @@ while MenuOp != '4':
                                 condi = '2'
 
                                 rakingadd = open('ranking.csv', 'a', newline='')
-
+                        # checa se todas as casas foram preenchidas, caso tenham sido empate sera verdadeiro
                         for i in range(len(tabuleiro)):
                             if '' in tabuleiro[i]:
                                 empate = False
                             else:
                                 empate = True
-
+                        # caso o empate seja verdadeiro, nenhum jogador vence e o jogo acaba
                         if empate:
-                            print(tabuleiro)
+                            print(tabulate(tabuleiroStr, headers='firstrow', tablefmt='fancy_grid'))
                             input('EMPATE!! Nenhum jogador atingiu o seu objetivo!(enter para continuar)')
                             condi = '2'
-
+                    
                     case '2':
+                        # Salva o jogo caso o player não queira terminar a partida
                         condi = '2'
                         print("\033c", end="")
                         nome = input("Digite um nome para salvar o jogo: ")
@@ -174,16 +201,17 @@ while MenuOp != '4':
                             print(IOError)
 
                     case '3':
+                        # Sai do jogo sem salvar
                         condi = '2'          
                         input('saindo do jogo sem salvar...')
         
         case '2':
+            # Tutoruial de como jogar o jogo
             print('Como jogar o jogo: Há um tabuleiro que pode ter N por N casas e deve ser jogado por dois jogadores. Cada jogador, em sua vez e de forma alternada, pode selecionar um número dentre os números disponíveis e posicionar este número em uma das casas. Ganha o jogador que fizer a sequência de N números em linha (diagonal, vertical ou horizontal, com leitura da esquerda para a direita e de cima para baixo) que atende ao seu objetivo. O jogo termina em empate se todas as casas do tabuleiro forem marcadas sem que nenhum jogador tenha completado uma sequência de objetivos.')
             input('(enter para voltar ao menu)')
-            # MAIS DETALHES E TABELAS EXEMPLO
         
         case '3':
-
+            # Mostra a tabela de vencedores
             try:
                 print("Tabela com vencedores")
                 ranking = open('raking.csv','r',newline='')
@@ -198,6 +226,7 @@ while MenuOp != '4':
             
 
         case '4':
+            # Sai do programa
             print('\nFinalizando programa')
         case _:
             print("Digite uma opção valida")

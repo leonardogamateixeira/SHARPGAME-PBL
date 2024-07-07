@@ -21,7 +21,8 @@ def dificuldade():
         else:
             print('Digite um valor valido!')
         tabuleiro = [['' for j in range(index)] for i in range(index)]
-    return tabuleiro, PlayerNum, index
+        tabuleiroStr = tabuleiro
+    return tabuleiro, PlayerNum, index, tabuleiroStr
 
 def objetivo():
     #  sorteia o objetivo do jogador
@@ -61,10 +62,7 @@ def SerieObjetivo(objetivo, indice):
         
     return listaobjetivo
 
-def identificarJogador(tabuleiroCor):
-    pass
-
-def SpecialRow(tabuleiro, index):
+def SpecialRow(tabuleiro, index, tabuleiroStr):
     # Pega a linha selecionada pelo jogador e subistitui todos numeros que tiverem
     # na linha por '' para fazer a jogada especial
     invalidRow = True
@@ -73,12 +71,13 @@ def SpecialRow(tabuleiro, index):
         DelRow = int(input(f"Escolha a linha (1-{index}): ")) - 1
         if 0 <= DelRow < index:
             tabuleiro[DelRow] = ['' for i in tabuleiro[index - 1]]
+            tabuleiroStr[DelRow] = ['' for i in tabuleiro[index - 1]]
             invalidRow = False
         else:
             print(f"Posição inválida. Escolha entre 1 e {index}.")
-    return tabuleiro, especial
+    return tabuleiro, especial, tabuleiroStr
 
-def SpecialCol(tabuleiro,index):
+def SpecialCol(tabuleiro,index, tabuleiroStr):
     # Pega a coluna selecionada pelo jogador e subistitui todos numeros que tiverem
     # na coluna por '' para fazer a jogada especial
     invalidPos = True
@@ -88,10 +87,11 @@ def SpecialCol(tabuleiro,index):
         if 0 <= 1 < index:
             for i in range(len(tabuleiro)):
                 tabuleiro[i][DelCol] = ''
+                tabuleiroStr[i][DelCol] = ''
             invalidPos = False
         else:
             print(f"Posição inválida. Escolha entre 1 e {index}.")
-    return tabuleiro, especial
+    return tabuleiro, especial, tabuleiroStr
 
 def escolherNumero(jogadas):
     # O jogador digita um numero e a função checa se esse numero está disponivel para ser jogado
