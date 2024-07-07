@@ -1,11 +1,13 @@
 import csv
-# from tabulate import tabulate
+from tabulate import tabulate
 import defs
 import json
+import csv
 # oioi
 MenuOp = ''
 while MenuOp != '4':
     print("\033c", end="")
+    # inicia o menu principal
     print('Tabuleiro de Números\n1-Jogar\n2-Tutorial\n3-Ultimos vencedores\n4-Sair do Jogo\n')
     MenuOp = input("Selecione uma opção: ")
     print("\033c", end="")
@@ -14,13 +16,16 @@ while MenuOp != '4':
         case '1':
             InvalidOpGame = True
             while InvalidOpGame:
+                # caso exista um jogo, pode iniciar, ou começa um novo jogo
                 JogoOp = input("1-Começar novo jogo\n2-Continuar um jogo")
                 if JogoOp == '1':
                     print("\033c", end="")
                     print('1-Fácil(3x3)\n2-Média(4x4)\n3-Difícil(5x5)\n')
+                    # usa da função para estabelecer as regras do jogo, baseado na dificuldade selecionada
                     tabuleiro, jogadas, indice = defs.dificuldade()
                     InvalidOp = True
                     while InvalidOp:
+                        # pergunta se tera jogada especial
                         especial = input('Será jogado com o especial?\n1-Sim 2-Não\nSelecione: ')
                         print("\033c", end="")
                         if especial == '1':
@@ -30,16 +35,17 @@ while MenuOp != '4':
                         else:
                             print('Digite um valor valido!')
                     print("\033c", end="")
-
+                    # Sorteia o objetivo do jogador
                     ObPlayerStr1 = defs.objetivo()
                     ObPlayerStr2 = defs.objetivo()
-
+                    # cria-se a lista com o objetivo do player
                     ObPlayer1 = defs.SerieObjetivo(ObPlayerStr1, indice)
                     ObPlayer2 = defs.SerieObjetivo(ObPlayerStr2, indice)
-
+                    # cria lista de listas com todas possibilidades de vitoria do player
                     VitoriaPlayer1 = defs.SerieVencedora(ObPlayerStr1, ObPlayer1, indice)
                     VitoriaPlayer2 = defs.SerieVencedora(ObPlayerStr2, ObPlayer2, indice)
 
+                    # Mostra para os jogadores seus objetivos
                     input("Aperte enter para ver o objetivo do jogador 1")
                     input(f'Seu objetivo é {ObPlayerStr1}(aperte enter e passe para o proximo jogador)')
                     print("\033c", end="")
@@ -50,11 +56,13 @@ while MenuOp != '4':
                     InvalidOpGame = False
 
                 elif JogoOp == '2':
+                    # Caso tenha jogo salvo é perguntado o nome do jogo
                     InvalidOpGame = False
                     nome = input("Digite o nome do jogo salvo que deseja continuar: ")
                     with open(f"{nome}.json") as savefile:
                         game = json.load(savefile)
                     
+                    # após isso, recebe todas variaveis salvas do jogo selecionado
                     tabuleiro = game['tabuleiro']
                     Player = game['lastPlayer']
                     especial1 = game['Especial1']
@@ -67,7 +75,11 @@ while MenuOp != '4':
                     print("Digite um valor valido")
 
             condi = ''
+            # Inicia a a partida
             while condi != "2":
+                # O Player será configurado sendo
+                # Player = True = player1
+                # Player = False = player2
                 Player = not Player
                 print("\033c", end="")
                 if Player:
@@ -78,45 +90,57 @@ while MenuOp != '4':
                 # print(tabulate(tabuleiro, headers='firstrow', tablefmt='fancy_grid'))
                 print(tabuleiro)
                 game = input("1-jogar\n2-Sair e salvar\n3-Sair sem salvar")
+                # Reseta as colunas e linhas ao inicio do looping
                 row, col = '', ''
                 match game:
                     case '1':
                         if especial == '1':
+                            
+                            # Caso especial tenha sido habilitado, entra na opção de usar o especial
                             InvalidSpecial = True
                             while InvalidSpecial:
                                 PlayerSpecial = input("1- Limpar coluna\n2- Limpar linha\n3-Não usar especial")
                                 if PlayerSpecial == '1':
-                                    tabuleiro, especial = defs.SpecialCol(tabuleiro, indice, jogadas)
+                                    tabuleiro, Usoespecial = defs.SpecialCol(tabuleiro, indice)
                                     InvalidSpecial = False
+
                                 elif PlayerSpecial == '2':
-                                    tabuleiro, especial = defs.SpecialRow(tabuleiro, indice, jogadas)
+                                    tabuleiro, Usoespecial = defs.SpecialRow(tabuleiro, indice)
                                     InvalidSpecial = False
+
                                 elif PlayerSpecial == '3':
                                     InvalidSpecial = False
                                 else:
                                     print("Digite um valor valido")
                             if Player:
-                                especial1 = especial
+                                especial1 = Usoespecial
                             else:
-                                especial2 = especial
+                                especial2 = Usoespecial
 
+                        # Escolhe qual numero sera usado e onde sera posicionado no tabuleiro
                         print(f"Números disponíveis: {jogadas}")
-                        num = defs.escolherNumero(jogadas, tabuleiro, indice)
+                        num = defs.escolherNumero(jogadas)
                         row, col = defs.escolherPosicao(tabuleiro, indice)
+
                         tabuleiro[row][col] = num
+                        jogadas.remove(num)
+
+                        #  Checa se ouve vitoria(isso se repete a cada jogada)
                         Ganhador = defs.CheckVitoria(VitoriaPlayer1, VitoriaPlayer2, Player,tabuleiro, row, col)
                         if Ganhador == 'player1' or Ganhador == 'player2':
                             InvalidName = True
                             while InvalidName:
                                 print("\033c", end="")
-                                print(tabulate(tabuleiro, headers='firstrow', tablefmt='fancy_grid'))
-                                # print(tabuleiro)
-                                nomeranking = input(f'Parabens {Ganhador}!!, agora adicione seu nome a tabela de vencedores para eternizar o momento: ')
+                                # print(tabulate(tabuleiro, headers='firstrow', tablefmt='fancy_grid'))
+                                print(tabuleiro)
+                                nomeranking = input(f'Parabens {Ganhador}!!, agora adicione seu nome a tabela de vencedores: ')
                                 if nomeranking == '':
                                     print("Digite um nome!")
                                 else:
                                     InvalidName = False
                                 condi = '2'
+
+                                rakingadd = open('ranking.csv', 'a', newline='')
 
                         for i in range(len(tabuleiro)):
                             if '' in tabuleiro[i]:
@@ -159,9 +183,20 @@ while MenuOp != '4':
             # MAIS DETALHES E TABELAS EXEMPLO
         
         case '3':
-            # Organizar o arquivo csv e printar a tabela
-            print("Tabela com vencedores")
-        
+
+            try:
+                print("Tabela com vencedores")
+                ranking = open('raking.csv','r',newline='')
+                reader = csv.reader(ranking, delimiter=',')
+                ranking = [row for row in reader]
+                ranking.close()
+            except:
+                print(IOError)
+
+            print(tabulate(ranking, headers='firstrow', tablefmt='fancy_grid'))
+            input("ENTER para voltar para o menu")
+            
+
         case '4':
             print('\nFinalizando programa')
         case _:

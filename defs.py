@@ -1,6 +1,8 @@
 from random import randrange
 
 def dificuldade():
+    # o usuario seleciona uma dificuldade, e baseado na resposta, é montado 
+    # o tabuleiro e a lista de numeros que podem ser jogados
     invalidop = True
     while invalidop:
         dificultOp = input('Selecione uma dificuldade: ')
@@ -22,11 +24,14 @@ def dificuldade():
     return tabuleiro, PlayerNum, index
 
 def objetivo():
+    #  sorteia o objetivo do jogador
      lista = ['Par', 'Impar', 'Crescente', 'Decrescente']
      objetivo = lista[randrange(len(lista))]
      return objetivo
 
 def recorte(lista, indice):
+    # recebe a lista de numeros que podem ser jogados, e recorta ela para os numeros
+    # que podem ser jogados baseados no tamanho do tabuleiro
     match indice:
         case 3:
             return [i for i in lista if i <= 9]
@@ -36,6 +41,8 @@ def recorte(lista, indice):
             return [i for i in lista if i <= 25]
 
 def SerieObjetivo(objetivo, indice):
+    # baseado no objetivo, cria uma lista com os numeros totais do objetivo
+    # e recorta a lista baseado no tabuleiro
     if objetivo == 'Par':
         lista = [2,4,6,8,10,12,14,16,18,20,22,24]
         listaobjetivo = recorte(lista, indice)
@@ -58,6 +65,8 @@ def identificarJogador(tabuleiroCor):
     pass
 
 def SpecialRow(tabuleiro, index):
+    # Pega a linha selecionada pelo jogador e subistitui todos numeros que tiverem
+    # na linha por '' para fazer a jogada especial
     invalidRow = True
     especial = False
     while invalidRow:
@@ -70,6 +79,8 @@ def SpecialRow(tabuleiro, index):
     return tabuleiro, especial
 
 def SpecialCol(tabuleiro,index):
+    # Pega a coluna selecionada pelo jogador e subistitui todos numeros que tiverem
+    # na coluna por '' para fazer a jogada especial
     invalidPos = True
     especial = False
     while invalidPos:
@@ -82,17 +93,20 @@ def SpecialCol(tabuleiro,index):
             print(f"Posição inválida. Escolha entre 1 e {index}.")
     return tabuleiro, especial
 
-def escolherNumero(jogadas, tabuleiro):
+def escolherNumero(jogadas):
+    # O jogador digita um numero e a função checa se esse numero está disponivel para ser jogado
     InvalidNum = True
     while InvalidNum:
         num = int(input("Escolha um número para colocar no tabuleiro: "))
-        if num in jogadas and num not in tabuleiro:
+        if num in jogadas:
             InvalidNum = False
         else:
             print("escolha um numéro disponivel.")
     return num
 
 def escolherPosicao(tabuleiro, index):
+    # Escolhe a linha e a coluna que será posicionada o número
+    # e checa se a posicao existe ou ja está ocupada
     invalidPos = True
     while invalidPos:
         row = int(input(f"Escolha a linha (1-{index}): ")) - 1
@@ -107,6 +121,8 @@ def escolherPosicao(tabuleiro, index):
     return row, col
   
 def SerieVencedora(PlayerStr, ObPlayer, indice):
+    # Cria listas de listas com todas as possiveis vitorias do usuario
+    # e devolve as sequencias, para serem checadas
     sequencias = []
     for jogada in range(len(ObPlayer)):
         if jogada > len(ObPlayer) - indice:
@@ -122,6 +138,8 @@ def SerieVencedora(PlayerStr, ObPlayer, indice):
             sequencias.append(combinacao2)
 
 def CheckRow(objetivo1, objetivo2,tabuleiro, row):
+    # Checa se a ultima linha que teve a jogada e observa se algum objetivo foi concluido
+    # retorna qual player compriu o objetivo, e caso os dois tenham, retorna empate
     if tabuleiro[row] in objetivo1 and tabuleiro[row] in objetivo2:
         return 'draw'
     if tabuleiro[row] in objetivo1:
@@ -131,6 +149,8 @@ def CheckRow(objetivo1, objetivo2,tabuleiro, row):
     
 
 def CheckCol(objetivo1, objetivo2,tabuleiro, col):
+    # Checa se a ultima coluna que teve a jogada e observa se algum objetivo foi concluido
+    # retorna qual player compriu o objetivo, e caso os dois tenham, retorna empate
     coluna = [row[col] for row in tabuleiro]
     if coluna in objetivo1 and coluna in objetivo2:
         return 'draw'
@@ -140,6 +160,8 @@ def CheckCol(objetivo1, objetivo2,tabuleiro, col):
         return 'player2'
 
 def CheckDiagonal(objetivo1, objetivo2,tabuleiro, row):
+    # Checa se a ultima diagonal que teve a jogada e observa se algum objetivo foi concluido
+    # retorna qual player compriu o objetivo, e caso os dois tenham, retorna empate
     diagonalcres = [tabuleiro[indice][indice] for indice in range(len(tabuleiro))]
     diagonaldec = [tabuleiro[-(indice+1)][indice] for indice in range(len(tabuleiro))]
     if (diagonalcres in objetivo1 or diagonaldec in objetivo1) and (diagonalcres in objetivo2 or diagonaldec in objetivo2):
@@ -150,6 +172,8 @@ def CheckDiagonal(objetivo1, objetivo2,tabuleiro, row):
         return 'player2'
 
 def CheckVitoria(objetivo1, objetivo2, Player, tabuleiro, row, col):
+    # Observa qual player ganhou e adiciona a variavel ganhador, caso tenha
+    # retornado empate, o player que fez a ultima jogada para concluir o objetivo ganha
     ganhador = None
     ganhouDig = CheckDiagonal(objetivo1, objetivo2, tabuleiro, row)
     if ganhouDig == 'player1' or ganhouDig == 'player2':
