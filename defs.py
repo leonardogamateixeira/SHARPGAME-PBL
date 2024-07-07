@@ -1,4 +1,5 @@
 from random import randrange
+from copy import deepcopy
 
 def dificuldade():
     # o usuario seleciona uma dificuldade, e baseado na resposta, é montado 
@@ -21,7 +22,7 @@ def dificuldade():
         else:
             print('Digite um valor valido!')
         tabuleiro = [['' for j in range(index)] for i in range(index)]
-        tabuleiroStr = tabuleiro
+        tabuleiroStr = deepcopy(tabuleiro)
     return tabuleiro, PlayerNum, index, tabuleiroStr
 
 def objetivo():
@@ -159,7 +160,7 @@ def CheckCol(objetivo1, objetivo2,tabuleiro, col):
     if coluna in objetivo2:
         return 'player2'
 
-def CheckDiagonal(objetivo1, objetivo2,tabuleiro, row):
+def CheckDiagonal(objetivo1, objetivo2,tabuleiro):
     # Checa se a ultima diagonal que teve a jogada e observa se algum objetivo foi concluido
     # retorna qual player compriu o objetivo, e caso os dois tenham, retorna empate
     diagonalcres = [tabuleiro[indice][indice] for indice in range(len(tabuleiro))]
@@ -175,7 +176,7 @@ def CheckVitoria(objetivo1, objetivo2, Player, tabuleiro, row, col):
     # Observa qual player ganhou e adiciona a variavel ganhador, caso tenha
     # retornado empate, o player que fez a ultima jogada para concluir o objetivo ganha
     ganhador = None
-    ganhouDig = CheckDiagonal(objetivo1, objetivo2, tabuleiro, row)
+    ganhouDig = CheckDiagonal(objetivo1, objetivo2, tabuleiro)
     if ganhouDig == 'player1' or ganhouDig == 'player2':
         ganhador = ganhouDig
 

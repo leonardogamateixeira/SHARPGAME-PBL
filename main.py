@@ -1,3 +1,12 @@
+# Autor: Leonardo Gama Teixeira
+# Componente Curricular: 2024.1 EXA854 - MI - ALGORITMOS (TP03) 
+# Concluido em: 07/07/2024
+# Declaro que este código foi elaborado por mim de forma individual e não contém nenhum
+# trecho de código de outro colega ou de outro autor, tais como provindos de livros e
+# apostilas, e páginas ou documentos eletrônicos da Internet. Qualquer trecho de código
+# de outra autoria que não a minha está destacado com uma citação para o autor e a fonte
+# do código, e estou ciente que estes trechos não serão considerados para fins de avaliação.
+
 from tabulate import tabulate
 import defs
 import json
@@ -82,14 +91,14 @@ while MenuOp != '4':
                 # Player = True é player1
                 # Player = False é player2
                 Player = not Player
-                
                 print("\033c", end="")
                 if Player:
                     print("\033[0;34;1mVez do Player1\033[m")
                 else:
                     print("\033[0;31;1mVez do Player2\033[m")
-                
+
                 print(tabulate(tabuleiroStr, headers='firstrow', tablefmt='fancy_grid'))
+                
                 game = input("1-jogar\n2-Sair e salvar\n3-Sair sem salvar")
                 # Reseta as colunas e linhas ao inicio do looping
                 row, col = '', ''
@@ -102,6 +111,7 @@ while MenuOp != '4':
                                     # para ser usado apenas uma vez por partida
                                     InvalidSpecial = True
                                     while InvalidSpecial:
+                                        print("\033c", end="")
                                         PlayerSpecial = input("1- Limpar coluna\n2- Limpar linha\n3-Não usar especial")
                                         if PlayerSpecial == '1':
                                             tabuleiro, Usoespecial, tabuleiroStr = defs.SpecialCol(tabuleiro, indice, tabuleiroStr)
@@ -122,6 +132,7 @@ while MenuOp != '4':
                                 elif Player == False and especial2 == True:
                                     InvalidSpecial = True
                                     while InvalidSpecial:
+                                        print("\033c", end="")
                                         PlayerSpecial = input("1- Limpar coluna\n2- Limpar linha\n3-Não usar especial")
                                         if PlayerSpecial == '1':
                                             tabuleiro, Usoespecial, tabuleiroStr = defs.SpecialCol(tabuleiro, indice)
@@ -144,9 +155,9 @@ while MenuOp != '4':
                         num = defs.escolherNumero(jogadas)
                         row, col = defs.escolherPosicao(tabuleiro, indice)
                         if Player:
-                            tabuleiroStr[row][col] = f"\033[0;34m{num}\033[m"
+                            tabuleiroStr[row][col] = f'\033[34m{num}\033[0;0m'
                         else:
-                            tabuleiroStr[row][col] = f"\033[0;31m{num}\033[m"
+                            tabuleiroStr[row][col] = f'\033[31m{num}\033[0;0m'
                         tabuleiro[row][col] = num
                         jogadas.remove(num)
 
