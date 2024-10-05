@@ -10,10 +10,9 @@
 from tabulate import tabulate
 import defs
 import json
-import csv
 
 MenuOp = ''
-while MenuOp != '4':
+while MenuOp != '3':
     print("\033c", end="")
     # inicia o menu principal
     print('Tabuleiro de Números\n1-Jogar\n2-Tutorial\n3-Ultimos vencedores\n4-Sair do Jogo\n')
@@ -77,6 +76,7 @@ while MenuOp != '4':
                     Player = game['lastPlayer']
                     especial1 = game['Especial1']
                     especial2 = game['Especial2']
+                    especial = game['EspecialPartida']
                     VitoriaPlayer1 = game['VitoriaPlayer1']
                     VitoriaPlayer2 = game['VitoriaPlayer2']
                     jogadas = game['jogadas']
@@ -176,8 +176,10 @@ while MenuOp != '4':
                                 else:
                                     InvalidName = False
                                 condi = '2'
+                            ranking = defs.rankingjogadores(nomeranking)
+                                
+                                
 
-                                rakingadd = open('ranking.csv', 'a', newline='')
                         # checa se todas as casas foram preenchidas, caso tenham sido empate sera verdadeiro
                         for i in range(len(tabuleiro)):
                             if '' in tabuleiro[i]:
@@ -200,6 +202,7 @@ while MenuOp != '4':
                             "lastPlayer": not Player,
                             "Especial1": especial1,
                             "Especial2": especial2,
+                            "EspecialPartida": especial,
                             "VitoriaPlayer1": VitoriaPlayer1,
                             "VitoriaPlayer2": VitoriaPlayer2,
                             "jogadas": jogadas
@@ -217,26 +220,11 @@ while MenuOp != '4':
                         input('saindo do jogo sem salvar...')
         
         case '2':
-            # Tutoruial de como jogar o jogo
+            # Tutorial de como jogar o jogo
             print('Como jogar o jogo: Há um tabuleiro que pode ter N por N casas e deve ser jogado por dois jogadores. Cada jogador, em sua vez e de forma alternada, pode selecionar um número dentre os números disponíveis e posicionar este número em uma das casas. Ganha o jogador que fizer a sequência de N números em linha (diagonal, vertical ou horizontal, com leitura da esquerda para a direita e de cima para baixo) que atende ao seu objetivo. O jogo termina em empate se todas as casas do tabuleiro forem marcadas sem que nenhum jogador tenha completado uma sequência de objetivos.')
-            input('(enter para voltar ao menu)')
-        
+            input('(enter para voltar ao menu)')            
+
         case '3':
-            # Mostra a tabela de vencedores
-            try:
-                print("Tabela com vencedores")
-                ranking = open('raking.csv','r',newline='')
-                reader = csv.reader(ranking, delimiter=',')
-                ranking = [row for row in reader]
-                ranking.close()
-            except:
-                print(IOError)
-
-            print(tabulate(ranking, headers='firstrow', tablefmt='fancy_grid'))
-            input("ENTER para voltar para o menu")
-            
-
-        case '4':
             # Sai do programa
             print('\nFinalizando programa')
         case _:
